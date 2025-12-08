@@ -1,0 +1,247 @@
+<?xml version="1.0" ?>
+<sdf version="1.8">
+  <world name="home_cleaner_world">
+    
+    <!-- FİZİK VE IŞIK -->
+    <physics name="1ms" type="ignored">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+    </physics>
+    <plugin filename="gz-sim-physics-system" name="gz::sim::systems::Physics"></plugin>
+    <plugin filename="gz-sim-user-commands-system" name="gz::sim::systems::UserCommands"></plugin>
+    <plugin filename="gz-sim-scene-broadcaster-system" name="gz::sim::systems::SceneBroadcaster"></plugin>
+
+    <light type="directional" name="sun">
+      <cast_shadows>true</cast_shadows>
+      <pose>0 0 10 0 0 0</pose>
+      <diffuse>0.8 0.8 0.8 1</diffuse>
+      <specular>0.2 0.2 0.2 1</specular>
+      <direction>-0.5 0.1 -0.9</direction>
+    </light>
+
+    <model name="ground_plane">
+      <static>true</static>
+      <link name="link">
+        <collision name="collision"><geometry><plane><normal>0 0 1</normal><size>100 100</size></plane></geometry></collision>
+        <visual name="visual"><geometry><plane><normal>0 0 1</normal><size>100 100</size></plane></geometry>
+          <material><ambient>0.8 0.8 0.8 1</ambient><diffuse>0.8 0.8 0.8 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- EV MODELİ  -->
+    <model name="custom_home_layout">
+      <static>true</static>
+      <pose>0 0 0 0 0 0</pose> 
+
+      <link name="structure">
+        
+        <!-- ========================================== -->
+        <!-- DUVARLAR (WALLS) -->
+        <!-- ========================================== -->
+
+        <!-- 1. Ana Dış Çerçeve  -->
+        <!-- Kuzey Duvarı (Üst) -->
+        <visual name="wall_north_vis">
+          <pose>0 5 1.25 0 0 0</pose>
+          <geometry><box><size>15 0.2 2.5</size></box></geometry>
+          <material><ambient>0.6 0.6 0.6 1</ambient><diffuse>0.6 0.6 0.6 1</diffuse></material>
+        </visual>
+        <collision name="wall_north"><pose>0 5 1.25 0 0 0</pose><geometry><box><size>15 0.2 2.5</size></box></geometry></collision>
+
+
+        <!-- Güney Duvarı (Alt) -->
+        <visual name="wall_south_vis">
+          <pose>0 -5 1.25 0 0 0</pose>
+          <geometry><box><size>15 0.2 2.5</size></box></geometry>
+          <material><ambient>0.6 0.6 0.6 1</ambient><diffuse>0.6 0.6 0.6 1</diffuse></material>
+        </visual>
+        <collision name="wall_south"><pose>0 -5 1.25 0 0 0</pose><geometry><box><size>15 0.2 2.5</size></box></geometry></collision>
+
+        <!-- Batı Duvarı (Sol - Salon Tarafı) -->
+        <visual name="wall_west_vis">
+          <pose>-7.5 0 1.25 0 0 0</pose>
+          <geometry><box><size>0.2 10.2 2.5</size></box></geometry>
+          <material><ambient>0.6 0.6 0.6 1</ambient><diffuse>0.6 0.6 0.6 1</diffuse></material>
+        </visual>
+        <collision name="wall_west"><pose>-7.5 0 1.25 0 0 0</pose><geometry><box><size>0.2 10.2 2.5</size></box></geometry></collision>
+
+        <!-- Doğu Duvarı (Sağ - Odalar Tarafı) -->
+        <visual name="wall_east_vis">
+          <pose>7.5 0 1.25 0 0 0</pose>
+          <geometry><box><size>0.2 10.2 2.5</size></box></geometry>
+          <material><ambient>0.6 0.6 0.6 1</ambient><diffuse>0.6 0.6 0.6 1</diffuse></material>
+        </visual>
+        <collision name="wall_east"><pose>7.5 0 1.25 0 0 0</pose><geometry><box><size>0.2 10.2 2.5</size></box></geometry></collision>
+
+
+    
+	<!-- ========================================== -->
+        <!-- 2. İÇ DÖŞEME (KAPILI DİKEY DUVAR) -->
+        <!-- ========================================== -->
+        
+
+        <!-- A. En Üst Parça (Oda 1'in üst köşesi) -->
+        <visual name="wall_vert_top_vis">
+          <pose>2 4.25 1.25 0 0 0</pose> <!-- Y=4.25 merkezli -->
+          <geometry><box><size>0.2 1.5 2.5</size></box></geometry>
+          <material><ambient>0.6 0.6 0.6 1</ambient><diffuse>0.6 0.6 0.6 1</diffuse></material>
+        </visual>
+        <collision name="wall_vert_top"><pose>2 4.25 1.25 0 0 0</pose><geometry><box><size>0.2 1.5 2.5</size></box></geometry></collision>
+
+        <!-- KAPI BOŞLUĞU 1 BURADA (Y=3.5 ile Y=2.5 arası boş) -->
+
+        <!-- B. Orta Parça (İki kapı arasındaki duvar) -->
+        <visual name="wall_vert_mid_vis">
+          <pose>2 0 1.25 0 0 0</pose> <!-- Tam merkez -->
+          <geometry><box><size>0.2 5 2.5</size></box></geometry> <!-- 5 metre uzunluğunda -->
+          <material><ambient>0.6 0.6 0.6 1</ambient><diffuse>0.6 0.6 0.6 1</diffuse></material>
+        </visual>
+        <collision name="wall_vert_mid"><pose>2 0 1.25 0 0 0</pose><geometry><box><size>0.2 5 2.5</size></box></geometry></collision>
+
+        <!-- KAPI BOŞLUĞU 2 BURADA (Y=-2.5 ile Y=-3.5 arası boş) -->
+
+        <!-- C. En Alt Parça (Oda 2'nin alt köşesi) -->
+        <visual name="wall_vert_bot_vis">
+          <pose>2 -4.25 1.25 0 0 0</pose>
+          <geometry><box><size>0.2 1.5 2.5</size></box></geometry>
+          <material><ambient>0.6 0.6 0.6 1</ambient><diffuse>0.6 0.6 0.6 1</diffuse></material>
+        </visual>
+        <collision name="wall_vert_bot"><pose>2 -4.25 1.25 0 0 0</pose><geometry><box><size>0.2 1.5 2.5</size></box></geometry></collision>
+        
+        <!-- KAPILARIN ÜSTÜNDEKİ KİRİŞLER (Görüntü bütünlüğü için) -->
+        <visual name="door_header_1_vis">
+           <pose>2 3 2.25 0 0 0</pose> <geometry><box><size>0.2 1 0.5</size></box></geometry>
+           <material><ambient>0.6 0.6 0.6 1</ambient><diffuse>0.6 0.6 0.6 1</diffuse></material>
+        </visual>
+        <visual name="door_header_2_vis">
+           <pose>2 -3 2.25 0 0 0</pose> <geometry><box><size>0.2 1 0.5</size></box></geometry>
+           <material><ambient>0.6 0.6 0.6 1</ambient><diffuse>0.6 0.6 0.6 1</diffuse></material>
+        </visual>  
+
+        <!-- 3. Odaların Yatay Bölmeleri -->
+        
+        <!-- Oda 1 ile Oda 2 Arası -->
+        <visual name="wall_room1_2_vis">
+          <pose>4.5 1 1.25 0 0 0</pose>
+          <geometry><box><size>5 0.2 2.5</size></box></geometry>
+          <material><ambient>0.5 0.7 1.0 1</ambient><diffuse>0.5 0.7 1.0 1</diffuse></material> <!-- Mavi Alan Duvarı -->
+        </visual>
+        <collision name="wall_room1_2"><pose>4.5 2 1.25 0 0 0</pose><geometry><box><size>5 0.2 2.5</size></box></geometry></collision>
+
+        <!-- Oda 2 ile Banyo Arası -->
+        <visual name="wall_room2_bath_vis">
+          <pose>4.5 -1 1.25 0 0 0</pose>
+          <geometry><box><size>5 0.2 2.5</size></box></geometry>
+          <material><ambient>0.5 0.7 1.0 1</ambient><diffuse>0.5 0.7 1.0 1</diffuse></material>
+        </visual>
+        <collision name="wall_room2_bath"><pose>4.5 -2 1.25 0 0 0</pose><geometry><box><size>5 0.2 2.5</size></box></geometry></collision> 
+        
+
+
+        <!-- ========================================== -->
+        <!-- MOBİLYALAR -->
+        <!-- ========================================== -->
+
+        <!-- 1. SALON (Sol Taraf) -->
+        
+        <!-- Ana Büyük Koltuk (Üst Duvar Tarafı) -->
+        <visual name="sofa_main_vis">
+          <pose>-3.5 3.5 0.4 0 0 0</pose>
+          <geometry><box><size>3 0.8 0.8</size></box></geometry>
+          <material><ambient>0.2 0.2 0.2 1</ambient><diffuse>0.2 0.2 0.2 1</diffuse></material>
+        </visual>
+        <collision name="sofa_main"><pose>-3.5 3.5 0.4 0 0 0</pose><geometry><box><size>3 0.8 0.8</size></box></geometry></collision>
+
+        <!-- Yan Koltuk (Sol Duvar Tarafı) -->
+        <visual name="sofa_side_vis">
+          <pose>-6 1.5 0.4 0 0 0</pose>
+          <geometry><box><size>0.8 2 0.8</size></box></geometry>
+          <material><ambient>0.2 0.2 0.2 1</ambient><diffuse>0.2 0.2 0.2 1</diffuse></material>
+        </visual>
+        <collision name="sofa_side"><pose>-6 1.5 0.4 0 0 0</pose><geometry><box><size>0.8 2 0.8</size></box></geometry></collision>
+
+        <!-- Orta Sehpa (Küçük) -->
+        <visual name="coffee_table_vis">
+          <pose>-3.5 1.5 0.3 0 0 0</pose>
+          <geometry><box><size>2 1 0.5</size></box></geometry>
+          <material><ambient>0.4 0.2 0.1 1</ambient><diffuse>0.4 0.2 0.1 1</diffuse></material>
+        </visual>
+        <collision name="coffee_table"><pose>-3.5 1.5 0.3 0 0 0</pose><geometry><box><size>1 1 0.5</size></box></geometry></collision>
+
+        <!-- TV Ünitesi (Dikey Duvara Yaslı) -->
+        <visual name="tv_unit_vis">
+          <pose>0 1.5 0.5 0 0 0</pose>
+          <geometry><box><size>0.6 2.5 1</size></box></geometry>
+          <material><ambient>0.1 0.1 0.1 1</ambient><diffuse>0.1 0.1 0.1 1</diffuse></material>
+        </visual>
+        <collision name="tv_unit"><pose>0 1.5 0.5 0 0 0</pose><geometry><box><size>0.6 2.5 1</size></box></geometry></collision>
+
+        <!-- 2. MUTFAK (Sol Alt) -->
+        
+        <!-- Ada Mutfak (Ortada) -->
+        <visual name="island_vis">
+          <pose>-5 -2 0.5 0 0 0</pose>
+          <geometry><box><size>3 1.2 1</size></box></geometry>
+          <material><ambient>0.9 0.9 0.9 1</ambient><diffuse>0.9 0.9 0.9 1</diffuse></material>
+        </visual>
+        <collision name="island"><pose>-5 -2 0.5 0 0 0</pose><geometry><box><size>3 1.2 1</size></box></geometry></collision>
+
+        <!-- Arka Tezgah (Alt Duvar) -->
+        <visual name="counter_back_vis">
+          <pose>-4 -4.5 0.5 0 0 0</pose>
+          <geometry><box><size>7 0.8 1</size></box></geometry>
+          <material><ambient>0.9 0.9 0.9 1</ambient><diffuse>0.9 0.9 0.9 1</diffuse></material>
+        </visual>
+        <collision name="counter_back"><pose>-4 -4.5 0.5 0 0 0</pose><geometry><box><size>5 0.8 1</size></box></geometry></collision>
+
+        <!-- Buzdolabı (Sağ Alt Köşe) -->
+        <visual name="fridge_vis">
+          <pose>1 -4.5 1 0 0 0</pose>
+          <geometry><box><size>1 1 2</size></box></geometry>
+          <material><ambient>0.7 0.7 0.8 1</ambient><diffuse>0.7 0.7 0.8 1</diffuse></material>
+        </visual>
+        <collision name="fridge"><pose>1 -4.5 1 0 0 0</pose><geometry><box><size>1 1 2</size></box></geometry></collision>
+
+        <!-- 3. ODALAR (Sağ Taraf) -->
+        
+        <!-- ODA 1 (Üst) -->
+        <!-- Yatak -->
+        <visual name="bed_1_vis">
+          <pose>6 2.5 0.3 0 0 0</pose>
+          <geometry><box><size>2 1.5 0.6</size></box></geometry>
+          <material><ambient>0.8 0.6 0.6 1</ambient><diffuse>0.8 0.6 0.6 1</diffuse></material>
+        </visual>
+        <collision name="bed_1"><pose>6 2.5 0.3 0 0 0</pose><geometry><box><size>2 1.5 0.6</size></box></geometry></collision>
+        
+        <!-- Dolap (Kapının arkasında kalacak şekilde yukarı itildi) -->
+        <visual name="wardrobe_1_vis">
+          <pose>2.6 4.2 1 0 0 0</pose> 
+          <geometry><box><size>0.6 1.2 2</size></box></geometry>
+          <material><ambient>0.4 0.2 0 1</ambient><diffuse>0.4 0.2 0 1</diffuse></material>
+        </visual>
+        <collision name="wardrobe_1"><pose>2.6 4.2 1 0 0 0</pose><geometry><box><size>0.6 1.2 2</size></box></geometry></collision>
+
+        <!-- ODA 2 (Orta/Alt) -->
+        <!-- Yatak -->
+        <visual name="bed_2_vis">
+          <pose>6 -2.5 0.3 0 0 0</pose>
+          <geometry><box><size>2 1.5 0.6</size></box></geometry>
+          <material><ambient>0.8 0.6 0.6 1</ambient><diffuse>0.8 0.6 0.6 1</diffuse></material>
+        </visual>
+        <collision name="bed_2"><pose>6 -2.5 0.3 0 0 0</pose><geometry><box><size>2 1.5 0.6</size></box></geometry></collision>
+
+        <!-- Dolap (Kapının altına itildi) -->
+        <visual name="wardrobe_2_vis">
+          <pose>2.6 -4.2 1 0 0 0</pose>
+          <geometry><box><size>0.6 1.2 2</size></box></geometry>
+          <material><ambient>0.4 0.2 0 1</ambient><diffuse>0.4 0.2 0 1</diffuse></material>
+        </visual>
+        <collision name="wardrobe_2"><pose>2.6 -4.2 1 0 0 0</pose><geometry><box><size>0.6 1.2 2</size></box></geometry></collision>
+
+        
+
+      </link>
+    </model>
+  </world>
+</sdf>

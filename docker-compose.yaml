@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  homebot:
+    # İmajı bu klasördeki Dockerfile'dan oluştur
+    build: .
+    image: homecleanerbot
+    container_name: home_cleaner_container
+    
+    # Grafik Arayüz (GUI) Ayarları (Gazebo/RViz görmek için şart)
+    environment:
+      - DISPLAY=${DISPLAY}
+      - QT_X11_NO_MITSHM=1
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=all
+    
+    # "VOLUME MOUNTING" - SİHİRLİ KISIM BURASI
+    # Senin bilgisayarındaki 'src' klasörünü, Docker'ın içindeki 'src'ye bağlar.
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - ./src:/root/colcon_ws/src
+    
+    # Ağ ayarları (Host ile aynı ağı kullan)
+    network_mode: host
+    
+    # Yetki ayarları
+    privileged: true
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
