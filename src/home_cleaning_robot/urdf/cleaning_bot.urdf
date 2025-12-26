@@ -18,6 +18,10 @@
         <color rgba=".75 .75 .75 1"/>    
     </material>
 
+    <material name="purple">
+        <color rgba=".75 0 1 1" />
+    </material>
+
     <!-- World link as the root. -->
     <link name="world"/>
 
@@ -97,6 +101,25 @@
         </inertial>
     </link>
 
+    <!-- This is the lidar camera link mounted on top of the chassis. -->
+    <link name="lidar_link">
+        <visual>
+            <geometry>
+                <box size=".5 .5 .5"/>
+            </geometry>
+            <material name="purple"/>
+        </visual>
+        <collision>
+            <geometry>
+                <box size=".5 .5 .5"/>
+            </geometry>
+        </collision>
+        <inertial>
+            <mass value="0.2"/>
+            <inertia ixx="0.004167" ixy="0.0" ixz="0.0" iyy="0.004167" iyz="0.0" izz="0.004167"/>
+        </inertial>
+    </link>
+
     <!-- This joint defines offset of base joint from world root. -->
     <joint name="world_base_joint" type="fixed">
         <parent link="world"/>
@@ -125,5 +148,12 @@
         <parent link="base_link"/>
         <child link="caster_wheel_link"/>
         <origin xyz="0 0 -1" rpy="0.0 0.0 0.0"/>
+    </joint>
+
+    <!-- This joint defines base/lidar joint. -->
+    <joint name="base_lidar_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="lidar_link"/>
+        <origin xyz="1.75 0 .75" rpy="0.0 0.0 0.0"/>
     </joint>
 </robot>
