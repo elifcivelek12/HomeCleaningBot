@@ -16,6 +16,47 @@
     <xacro:property name="lidar_length" value="${chassis_radius/4}" />
 
     <xacro:property name="wheel_distance" value="${chassis_radius+wheel_length/2}" />
+    <xacro:property name="caster_distance" value="${chassis_radius * 1.5}" />
+
+    <!-- Inertial macros with proper tensor calculations. -->
+    <!-- Cylindrical inertia (for chassis) -->
+    <xacro:macro name="cylinder_inertial" params="mass radius length">
+    <inertial>
+        <mass value="${mass}" />
+        <!-- Ixx = Iyy = (1/12)*m*(3*r^2 + h^2), Izz = (1/2)*m*r^2 -->
+        <inertia ixx="${mass*(3*radius*radius + length*length)/12}" 
+                 ixy="0.0" ixz="0.0" 
+                 iyy="${mass*(3*radius*radius + length*length)/12}" 
+                 iyz="0.0" 
+                 izz="${mass*radius*radius/2}" />
+    </inertial>
+    </xacro:macro>
+
+    <!-- Sphere inertial (for caster wheel) -->
+    <xacro:macro name="sphere_inertial" params="mass radius">
+    <inertial>
+        <mass value="${mass}" />
+        <!-- I = (2/5)*m*r^2 for all axes -->
+        <inertia ixx="${mass*radius*radius*2/5}" 
+                 ixy="0.0" ixz="0.0" 
+                 iyy="${mass*radius*radius*2/5}" 
+                 iyz="0.0" 
+                 izz="${mass*radius*radius*2/5}" />
+    </inertial>
+    </xacro:macro>
+
+    <!-- Box inertial (for lidar) -->
+    <xacro:macro name="box_inertial" params="mass length width height">
+    <inertial>
+        <mass value="${mass}" />
+        <!-- Ixx = (1/12)*m*(w^2 + h^2), Iyy = (1/12)*m*(l^2 + h^2), Izz = (1/12)*m*(l^2 + w^2) -->
+        <inertia ixx="${mass*(width*width + height*height)/12}" 
+                 ixy="0.0" ixz="0.0" 
+                 iyy="${mass*(length*length + height*height)/12}" 
+                 iyz="0.0" 
+                 izz="${mass*(length*length + width*width)/12}" />
+    </inertial>
+    </xacro:macro>
 
     <!-- Default inertial from ROS tutorials. -->
     <xacro:macro name="default_inertial" params="mass">
@@ -46,6 +87,10 @@
         <color rgba="${bright} 0 ${bright*0.75} ${alpha}" />
     </material>
 
+    <material name="yellow">
+        <color rgba="${bright} ${bright} 0.0 ${alpha}"/>
+    </material>
+
     <!-- This is the base link of the robot. A simple cylinderical chassis. -->
     <link name="base_link">
         <visual>
@@ -59,7 +104,7 @@
                 <cylinder radius="${chassis_radius}" length="${chassis_length}"/>
             </geometry>
         </collision>
-        <xacro:default_inertial mass="10" />
+        <xacro:cylinder_inertial mass="3.0" radius="${chassis_radius}" length="${chassis_length}" />
     </link>
 
     <!-- This is the left wheel link. -->
@@ -75,7 +120,7 @@
                 <cylinder radius="${wheel_radius}" length="${wheel_length}"/>
             </geometry>
         </collision>
-        <xacro:default_inertial mass="10" />
+        <xacro:cylinder_inertial mass="1.0" radius="${wheel_radius}" length="${wheel_length}" />
     </link>
 
     <!-- This is the right wheel link. -->
@@ -91,7 +136,7 @@
                 <cylinder radius="${wheel_radius}" length="${wheel_length}"/>
             </geometry>
         </collision>
-        <xacro:default_inertial mass="10" />
+        <xacro:cylinder_inertial mass="1.0" radius="${wheel_radius}" length="${wheel_length}" />
     </link>
 
     <!-- The caster wheel. -->
@@ -107,7 +152,39 @@
                 <sphere radius="${caster_radius}"/>
             </geometry>
         </collision>
-        <xacro:default_inertial mass="10" />
+        <xacro:sphere_inertial mass="0.5" radius="${caster_radius}" />
+    </link>
+
+    <!-- The front stabilizer. -->
+    <link name="front_stabilizer_link">
+        <visual>
+            <geometry>
+                <sphere radius="${caster_radius}"/>
+            </geometry>
+            <material name="yellow"/>
+        </visual>
+        <collision>
+            <geometry>
+                <sphere radius="${caster_radius}"/>
+            </geometry>
+        </collision>
+        <xacro:sphere_inertial mass="0.5" radius="${caster_radius}" />
+    </link>
+
+    <!-- The back stabilizer. -->
+    <link name="back_stabilizer_link">
+        <visual>
+            <geometry>
+                <sphere radius="${caster_radius}"/>
+            </geometry>
+            <material name="yellow"/>
+        </visual>
+        <collision>
+            <geometry>
+                <sphere radius="${caster_radius}"/>
+            </geometry>
+        </collision>
+        <xacro:sphere_inertial mass="0.5" radius="${caster_radius}" />
     </link>
 
     <!-- This is the lidar camera link mounted on top of the chassis. -->
@@ -118,7 +195,7 @@
             </geometry>
             <material name="purple"/>
         </visual>
-        <xacro:default_inertial mass="0.1" />
+        <xacro:box_inertial mass="0.05" length="${lidar_length}" width="${lidar_length}" height="${lidar_length}" />
     </link>
 
     <!-- This joint defines base/left-wheel joint. -->
@@ -127,6 +204,7 @@
         <child link="left_wheel_link"/>
         <origin xyz="0 ${wheel_distance} -${chassis_length/2}" rpy="1.57 0 0"/>
         <axis xyz="0 0 -1"/>
+        <dynamics damping="0.5" friction="0.1"/>
     </joint>
 
     <!-- This joint defines base/right-wheel joint. -->
@@ -135,6 +213,7 @@
         <child link="right_wheel_link"/>
         <origin xyz="0 -${wheel_distance} -${chassis_length/2}" rpy="1.57 0 0"/>
         <axis xyz="0 0 -1"/>
+        <dynamics damping="0.5" friction="0.1"/>
     </joint>
 
     <!-- This joint defines base/caster-wheel joint. -->
@@ -144,6 +223,18 @@
         <origin xyz="0 0 -${chassis_length}" rpy="0.0 0.0 0.0"/>
     </joint>
 
+    <joint name="base_front_stabilizer_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="front_stabilizer_link"/>
+        <origin xyz="${chassis_radius-caster_radius/2} 0 -${chassis_length}" rpy="0.0 0.0 0.0"/>
+    </joint>
+
+    <joint name="base_back_stabilizer_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="back_stabilizer_link"/>
+        <origin xyz="-${chassis_radius-caster_radius/2} 0 -${chassis_length}" rpy="0.0 0.0 0.0"/>
+    </joint>
+
     <!-- This joint defines base/lidar joint. -->
     <joint name="base_lidar_joint" type="fixed">
         <parent link="base_link"/>
@@ -151,10 +242,32 @@
         <origin xyz="${chassis_radius-lidar_length/2} 0 ${chassis_length-lidar_length/2}" rpy="0.0 0.0 0.0"/>
     </joint>
 
-    <gazebo>
-        <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
-            <render_engine>ogre2</render_engine>
-        </plugin>
+    <gazebo reference="base_link">
+        <material>Gazebo/White</material>
+    </gazebo>
+
+    <gazebo reference="left_wheel_link">
+        <material>Gazebo/Blue</material>
+    </gazebo>
+
+    <gazebo reference="right_wheel_link">
+        <material>Gazebo/Red</material>
+    </gazebo>
+
+    <gazebo reference="caster_wheel_link">
+        <material>Gazebo/Green</material>
+    </gazebo>
+
+    <gazebo reference="left_stabilizer_link">
+        <material>Gazebo/Yellow</material>
+    </gazebo>
+
+    <gazebo reference="right_stabilizer_link">
+        <material>Gazebo/Yellow</material>
+    </gazebo>
+
+    <gazebo reference="lidar_link">
+        <material>Gazebo/Purple</material>
     </gazebo>
 
     <!-- Gazebo LiDAR sensor. -->
@@ -191,6 +304,9 @@
 
     <!-- Gazebo plugin for diff-drive. Allows the robot to move. -->
     <gazebo>
+        <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
+            <render_engine>ogre2</render_engine>
+        </plugin>
     	<plugin filename="libgz-sim-joint-state-publisher-system.so" name="gz::sim::systems::JointStatePublisher">
             <topic>joint_states</topic>
             <joint_name>base_left_wheel_joint</joint_name>
