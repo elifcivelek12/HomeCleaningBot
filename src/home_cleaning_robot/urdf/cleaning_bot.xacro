@@ -15,6 +15,14 @@
     <xacro:property name="caster_radius" value="${chassis_radius/4}" />
     <xacro:property name="lidar_length" value="${chassis_radius/4}" />
 
+    <!-- Default inertial from ROS tutorials. -->
+    <xacro:macro name="default_inertial" params="mass">
+    <inertial>
+        <mass value="${mass*scale}" />
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+    </inertial>
+    </xacro:macro>
+
     <!-- List of materials for easier viewing. -->
     <material name="red">
         <color rgba="${bright} 0.0 0.0 ${alpha}"/>
@@ -36,9 +44,6 @@
         <color rgba="${bright} 0 ${bright*0.75} ${alpha}" />
     </material>
 
-    <!-- World link as the root. -->
-    <link name="world"/>
-
     <!-- This is the base link of the robot. A simple cylinderical chassis. -->
     <link name="base_link">
         <visual>
@@ -52,10 +57,7 @@
                 <cylinder radius="${chassis_radius}" length="${chassis_length}"/>
             </geometry>
         </collision>
-        <inertial>
-            <mass value="10.0"/>
-            <inertia ixx="10.8333" ixy="0.0" ixz="0.0" iyy="10.8333" iyz="0.0" izz="20.0"/>
-        </inertial>
+        <xacro:default_inertial mass="10" />
     </link>
 
     <!-- This is the left wheel link. -->
@@ -71,10 +73,7 @@
                 <cylinder radius="${wheel_radius}" length="${wheel_length}"/>
             </geometry>
         </collision>
-        <inertial>
-            <mass value="1.0"/>
-            <inertia ixx="0.2708" ixy="0.0" ixz="0.0" iyy="0.2708" iyz="0.0" izz="0.5"/>
-        </inertial>
+        <xacro:default_inertial mass="10" />
     </link>
 
     <!-- This is the right wheel link. -->
@@ -90,10 +89,7 @@
                 <cylinder radius="${wheel_radius}" length="${wheel_length}"/>
             </geometry>
         </collision>
-        <inertial>
-            <mass value="1.0"/>
-            <inertia ixx="0.2708" ixy="0.0" ixz="0.0" iyy="0.2708" iyz="0.0" izz="0.5"/>
-        </inertial>
+        <xacro:default_inertial mass="10" />
     </link>
 
     <!-- The caster wheel. -->
@@ -109,10 +105,7 @@
                 <sphere radius="${caster_radius}"/>
             </geometry>
         </collision>
-        <inertial>
-            <mass value="0.5"/>
-            <inertia ixx="0.05" ixy="0.0" ixz="0.0" iyy="0.05" iyz="0.0" izz="0.05"/>
-        </inertial>
+        <xacro:default_inertial mass="10" />
     </link>
 
     <!-- This is the lidar camera link mounted on top of the chassis. -->
@@ -128,18 +121,8 @@
                 <box size="${lidar_length} ${lidar_length} ${lidar_length}"/>
             </geometry>
         </collision>
-        <inertial>
-            <mass value="0.2"/>
-            <inertia ixx="0.004167" ixy="0.0" ixz="0.0" iyy="0.004167" iyz="0.0" izz="0.004167"/>
-        </inertial>
+        <xacro:default_inertial mass="1" />
     </link>
-
-    <!-- This joint defines offset of base joint from world root. -->
-    <joint name="world_base_joint" type="fixed">
-        <parent link="world"/>
-        <child link="base_link"/>
-        <origin xyz="0.0 0.0 ${chassis_radius+caster_radius}" rpy="0.0 0.0 1.57" />
-    </joint>
 
     <!-- This joint defines base/left-wheel joint. -->
     <joint name="base_left_wheel_joint" type="continuous">
