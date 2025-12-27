@@ -1,3 +1,5 @@
+# ESKI LAUNCH DOSYASI. (Referans icin duruyor.)
+
 #!/usr/bin/env python3
 
 import os

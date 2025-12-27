@@ -1,3 +1,5 @@
+# Eski state publisher. Robot durumunu sanirim gazebodan almamiz gerek ama anlamadim tam.
+
 #!/usr/bin/env python3
 
 import rclpy
