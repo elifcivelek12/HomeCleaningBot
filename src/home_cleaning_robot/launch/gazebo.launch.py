@@ -57,10 +57,12 @@ def generate_launch_description():
     bridge = Node(
         package='ros_gz_bridge',
         executable='parameter_bridge',
+        parameters=[{'use_sim_time': True}],
         arguments=[
             '/cmd_vel@geometry_msgs/msg/Twist@gz.msgs.Twist',
             '/scan@sensor_msgs/msg/LaserScan@gz.msgs.LaserScan',
             '/odom@nav_msgs/msg/Odometry@gz.msgs.Odometry',
+            '/tf@tf2_msgs/msg/TFMessage[gz.msgs.Pose_V',
             '/joint_states@sensor_msgs/msg/JointState[gz.msgs.Model',
             '/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock' 
         ],
@@ -72,6 +74,7 @@ def generate_launch_description():
         package='tf2_ros',
         executable='static_transform_publisher',
         name='static_transform_publisher_lidar',
+        parameters=[{'use_sim_time': True}],
         arguments=['0', '0', '0', '0', '0', '0', 'lidar_link', 'home_cleaner_bot/base_link/lidar_sensor']
     )
 
