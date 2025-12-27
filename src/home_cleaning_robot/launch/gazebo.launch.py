@@ -59,17 +59,27 @@ def generate_launch_description():
         executable='parameter_bridge',
         arguments=[
             '/cmd_vel@gz.msgs/msg/Twist@gz.msgs/msg/Twist',
-            '/scan@sensor_msgs/msg/LaserScan@sensor_msgs/msg/LaserScan',
+            '/scan@sensor_msgs/msg/LaserScan@gz.msgs.LaserScan',
             '/odom@nav_msgs/msg/Odometry@nav_msgs/msg/Odometry',
             '/tf@tf2_msgs/msg/TFMessage@gz.msgs.Pose_V', 
+            '/joint_states@sensor_msgs/msg/JointState[gz.msgs.Model',
             '/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock' 
         ],
         output='screen'
+    )
+    
+    # İsim karmaşasını çözen yapıştırıcı (Static Transform)
+    static_tf = Node(
+        package='tf2_ros',
+        executable='static_transform_publisher',
+        name='static_transform_publisher_lidar',
+        arguments=['0', '0', '0', '0', '0', '0', 'lidar_link', 'home_cleaner_bot/base_link/lidar_sensor']
     )
 
     return LaunchDescription([
         gazebo,
         robot_state_publisher,
         spawn_robot,
-        bridge
+        bridge,
+        static_tf
     ])
