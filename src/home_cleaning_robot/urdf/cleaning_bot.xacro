@@ -15,6 +15,8 @@
     <xacro:property name="caster_radius" value="${chassis_radius/4}" />
     <xacro:property name="lidar_length" value="${chassis_radius/4}" />
 
+    <xacro:property name="wheel_distance" value="${chassis_radius+wheel_length/2}" />
+
     <!-- Default inertial from ROS tutorials. -->
     <xacro:macro name="default_inertial" params="mass">
     <inertial>
@@ -128,16 +130,16 @@
     <joint name="base_left_wheel_joint" type="continuous">
         <parent link="base_link"/>
         <child link="left_wheel_link"/>
-        <origin xyz="0 ${chassis_radius+wheel_length/2} -${chassis_length/2}" rpy="1.57 0 0"/>
-        <axis xyz="0 0 1"/>
+        <origin xyz="0 ${wheel_distance} -${chassis_length/2}" rpy="1.57 0 0"/>
+        <axis xyz="0 0 -1"/>
     </joint>
 
     <!-- This joint defines base/right-wheel joint. -->
     <joint name="base_right_wheel_joint" type="continuous">
         <parent link="base_link"/>
         <child link="right_wheel_link"/>
-        <origin xyz="0 -${chassis_radius+wheel_length/2} -${chassis_length/2}" rpy="1.57 0 0"/>
-        <axis xyz="0 0 1"/>
+        <origin xyz="0 -${wheel_distance} -${chassis_length/2}" rpy="1.57 0 0"/>
+        <axis xyz="0 0 -1"/>
     </joint>
 
     <!-- This joint defines base/caster-wheel joint. -->
@@ -154,4 +156,61 @@
         <origin xyz="${chassis_radius-lidar_length/2} 0 ${chassis_length-lidar_length/2}" rpy="0.0 0.0 0.0"/>
     </joint>
 
+    <!-- Gazebo LiDAR sensor. -->
+    <gazebo reference="lidar_link">
+        <sensor name="lidar_sensor" type="gpu_lidar">
+            <pose>0 0 0 0 0 0</pose>
+            <update_rate>10</update_rate>
+
+            <lidar>
+            <scan>
+                <horizontal>
+                <samples>720</samples>
+                <resolution>1</resolution>
+                <min_angle>-1.5708</min_angle>
+                <max_angle>1.5708</max_angle>
+                </horizontal>
+            </scan>
+
+            <range>
+                <min>0.1</min>
+                <max>30.0</max>
+                <resolution>0.01</resolution>
+            </range>
+            </lidar>
+
+            <always_on>true</always_on>
+            <visualize>true</visualize>
+
+            <topic>/scan</topic>
+        </sensor>
+    </gazebo>
+
+    <!-- Gazebo plugin for diff-drive. Allows the robot to move. -->
+    <gazebo>
+        <plugin filename="gz-sim-diff-drive-system" name="gz::sim::systems::DiffDrive">
+            <!-- Wheel joints -->
+            <left_joint>base_left_wheel_joint</left_joint>
+            <right_joint>base_right_wheel_joint</right_joint>
+
+            <!-- Robot kinematics -->
+            <wheel_separation>${wheel_distance*2}</wheel_separation>
+            <wheel_radius>${wheel_radius}</wheel_radius>
+
+            <!-- Motion limits -->
+            <max_linear_velocity>1.0</max_linear_velocity>
+            <max_angular_velocity>2.0</max_angular_velocity>
+
+            <!-- Command & odometry -->
+            <topic>/cmd_vel</topic>
+            <odom_topic>/odom</odom_topic>
+            <frame_id>odom</frame_id>
+            <child_frame_id>base_link</child_frame_id>
+
+            <!-- Behavior -->
+            <update_rate>50</update_rate>
+            <publish_odom>true</publish_odom>
+            <publish_tf>true</publish_tf>
+        </plugin>
+    </gazebo>
 </robot>
