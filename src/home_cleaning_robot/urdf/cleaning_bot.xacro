@@ -5,7 +5,7 @@
     <xacro:property name="alpha" value="1" />
 
     <!-- Xacro property for scale. -->
-    <xacro:property name="scale" value="1" />
+    <xacro:property name="scale" value=".15" />
 
     <!-- Scale derived from 'scale' property. -->
     <xacro:property name="chassis_radius" value="${scale*2}" />
