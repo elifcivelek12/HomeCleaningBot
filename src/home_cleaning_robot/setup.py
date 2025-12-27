@@ -11,7 +11,7 @@ setup(
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
         ('share/' + package_name + '/launch', ['launch/robot_state.launch.py', 'launch/gazebo.launch.py']),
-        ('share/' + package_name + '/urdf', ['urdf/cleaning_bot.urdf', 'urdf/r2d2.rviz'])
+        ('share/' + package_name + '/urdf', ['urdf/cleaning_bot.xacro', 'urdf/r2d2.rviz'])
     ],
     install_requires=['setuptools'],
     zip_safe=True,

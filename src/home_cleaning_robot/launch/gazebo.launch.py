@@ -20,7 +20,7 @@ def generate_launch_description():
     urdf = PathJoinSubstitution([
         FindPackageShare("home_cleaning_robot"),
         "urdf",
-        "cleaning_bot.urdf"
+        "cleaning_bot.xacro"
     ])
 
     # Gazebo Harmonic launch arguments. (You must install ros_gz bridge, recommended is *ros-humble-ros-gzharmonic*)

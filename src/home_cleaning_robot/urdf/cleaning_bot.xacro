@@ -1,25 +1,28 @@
 <?xml version="1.0"?>
-<robot name="cleaning_bot">
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="cleaning_bot">
+    <!-- Xacro property for color brightness. -->
+    <xacro:property name="bright" value=".75" />
+    <xacro:property name="alpha" value="1" />
 
     <!-- List of materials for easier viewing. -->
     <material name="red">
-        <color rgba=".75 0.0 0.0 1"/>
+        <color rgba="${bright} 0.0 0.0 ${alpha}"/>
     </material>
 
     <material name="blue">
-        <color rgba="0 0 .75 1" />
+        <color rgba="0 0 ${bright} ${alpha}" />
     </material>
 
     <material name="green">
-        <color rgba="0 .75 0 1" />
+        <color rgba="0 ${bright} 0 ${alpha}" />
     </material>
 
     <material name="white">
-        <color rgba=".75 .75 .75 1"/>    
+        <color rgba="${bright} ${bright} ${bright} ${alpha}"/>    
     </material>
 
     <material name="purple">
-        <color rgba=".75 0 1 1" />
+        <color rgba="${bright} 0 ${bright*0.75} ${alpha}" />
     </material>
 
     <!-- World link as the root. -->
