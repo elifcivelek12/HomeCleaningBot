@@ -1,8 +1,19 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="cleaning_bot">
-    <!-- Xacro property for color brightness. -->
+    <!-- Xacro property for color brightness and alpha. -->
     <xacro:property name="bright" value=".75" />
     <xacro:property name="alpha" value="1" />
+
+    <!-- Xacro property for scale. -->
+    <xacro:property name="scale" value="1" />
+
+    <!-- Scale derived from 'scale' property. -->
+    <xacro:property name="chassis_radius" value="${scale*2}" />
+    <xacro:property name="chassis_length" value="${scale*1}" />
+    <xacro:property name="wheel_radius" value="${chassis_radius/2}" />
+    <xacro:property name="wheel_length" value="${chassis_length/2}" />
+    <xacro:property name="caster_radius" value="${chassis_radius/4}" />
+    <xacro:property name="lidar_length" value="${chassis_radius/4}" />
 
     <!-- List of materials for easier viewing. -->
     <material name="red">
@@ -32,13 +43,13 @@
     <link name="base_link">
         <visual>
            <geometry>
-                <cylinder radius="2.0" length="1.0"/> 
+                <cylinder radius="${chassis_radius}" length="${chassis_length}"/> 
            </geometry>
            <material name="white"/>
         </visual>
         <collision>
             <geometry>
-                <cylinder radius="2.0" length="1.0"/>
+                <cylinder radius="${chassis_radius}" length="${chassis_length}"/>
             </geometry>
         </collision>
         <inertial>
@@ -51,13 +62,13 @@
     <link name="left_wheel_link">
         <visual>
             <geometry>
-                <cylinder radius="1.0" length=".5"/>
+                <cylinder radius="${wheel_radius}" length="${wheel_length}"/>
             </geometry>
             <material name="blue"/>
         </visual>
         <collision>
             <geometry>
-                <cylinder radius="1.0" length=".5"/>
+                <cylinder radius="${wheel_radius}" length="${wheel_length}"/>
             </geometry>
         </collision>
         <inertial>
@@ -70,13 +81,13 @@
     <link name="right_wheel_link">
         <visual>
             <geometry>
-                <cylinder radius="1.0" length=".5"/>
+                <cylinder radius="${wheel_radius}" length="${wheel_length}"/>
             </geometry>
             <material name="red"/>
         </visual>
         <collision>
             <geometry>
-                <cylinder radius="1.0" length=".5"/>
+                <cylinder radius="${wheel_radius}" length="${wheel_length}"/>
             </geometry>
         </collision>
         <inertial>
@@ -89,13 +100,13 @@
     <link name="caster_wheel_link">
         <visual>
             <geometry>
-                <sphere radius=".5"/>
+                <sphere radius="${caster_radius}"/>
             </geometry>
             <material name="green"/>
         </visual>
         <collision>
             <geometry>
-                <sphere radius="1.0"/>
+                <sphere radius="${caster_radius}"/>
             </geometry>
         </collision>
         <inertial>
@@ -108,13 +119,13 @@
     <link name="lidar_link">
         <visual>
             <geometry>
-                <box size=".5 .5 .5"/>
+                <box size="${lidar_length} ${lidar_length} ${lidar_length}"/>
             </geometry>
             <material name="purple"/>
         </visual>
         <collision>
             <geometry>
-                <box size=".5 .5 .5"/>
+                <box size="${lidar_length} ${lidar_length} ${lidar_length}"/>
             </geometry>
         </collision>
         <inertial>
@@ -127,14 +138,14 @@
     <joint name="world_base_joint" type="fixed">
         <parent link="world"/>
         <child link="base_link"/>
-        <origin xyz="0.0 0.0 1.5" rpy="0.0 0.0 1.57" />
+        <origin xyz="0.0 0.0 ${chassis_radius+caster_radius}" rpy="0.0 0.0 1.57" />
     </joint>
 
     <!-- This joint defines base/left-wheel joint. -->
     <joint name="base_left_wheel_joint" type="continuous">
         <parent link="base_link"/>
         <child link="left_wheel_link"/>
-        <origin xyz="0 2.25 -.5" rpy="1.57 0 0"/>
+        <origin xyz="0 ${chassis_radius+wheel_length/2} -${chassis_length/2}" rpy="1.57 0 0"/>
         <axis xyz="0 0 1"/>
     </joint>
 
@@ -142,7 +153,7 @@
     <joint name="base_right_wheel_joint" type="continuous">
         <parent link="base_link"/>
         <child link="right_wheel_link"/>
-        <origin xyz="0 -2.25 -.5" rpy="1.57 0 0"/>
+        <origin xyz="0 -${chassis_radius+wheel_length/2} -${chassis_length/2}" rpy="1.57 0 0"/>
         <axis xyz="0 0 1"/>
     </joint>
 
@@ -150,14 +161,14 @@
     <joint name="base_caster_wheel_joint" type="fixed">
         <parent link="base_link"/>
         <child link="caster_wheel_link"/>
-        <origin xyz="0 0 -1" rpy="0.0 0.0 0.0"/>
+        <origin xyz="0 0 -${chassis_length}" rpy="0.0 0.0 0.0"/>
     </joint>
 
     <!-- This joint defines base/lidar joint. -->
     <joint name="base_lidar_joint" type="fixed">
         <parent link="base_link"/>
         <child link="lidar_link"/>
-        <origin xyz="1.75 0 .75" rpy="0.0 0.0 0.0"/>
+        <origin xyz="${chassis_radius-lidar_length/2} 0 ${chassis_length-lidar_length/2}" rpy="0.0 0.0 0.0"/>
     </joint>
 
 </robot>
