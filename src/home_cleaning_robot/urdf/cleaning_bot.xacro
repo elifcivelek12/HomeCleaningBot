@@ -156,6 +156,12 @@
         <origin xyz="${chassis_radius-lidar_length/2} 0 ${chassis_length-lidar_length/2}" rpy="0.0 0.0 0.0"/>
     </joint>
 
+    <gazebo>
+        <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
+            <render_engine>ogre2</render_engine>
+        </plugin>
+    </gazebo>
+
     <!-- Gazebo LiDAR sensor. -->
     <gazebo reference="lidar_link">
         <sensor name="lidar_sensor" type="gpu_lidar">

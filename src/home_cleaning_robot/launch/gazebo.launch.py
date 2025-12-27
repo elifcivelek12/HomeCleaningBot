@@ -43,6 +43,7 @@ def generate_launch_description():
         executable='robot_state_publisher',
         output='screen',
         parameters=[{
+            'use_sim_time': True,
             'robot_description': ParameterValue(
                 Command(['xacro ', urdf]),
                 value_type=str
@@ -62,9 +63,27 @@ def generate_launch_description():
         output='screen'
     )
 
+    ros_gz_bridge = Node(
+        package='ros_gz_bridge',
+        executable='parameter_bridge',
+        arguments=[
+            '/cmd_vel@geometry_msgs/msg/Twist@gz.msgs.Twist',
+            'odom@nav_msgs/msg/Odometry@gz.msgs.Odometry',
+            '/scan@sensor_msgs/msg/LaserScan@gz.msgs.LaserScan',
+            '/world/default/model/cleaning_bot/joint_state@sensor_msgs/msg/JointState@gz.msgs.Model'
+        ],
+        remappings=[
+            ('/cmd_vel', '/cmd_vel'),
+            ('/odom', '/odom'),
+            ('/scan', '/scan')
+        ],
+        output='screen'
+    )
+
     # Launch everything in order.
     return LaunchDescription([
         gazebo,
         robot_state_publisher,
         spawn_robot,
+        ros_gz_bridge
     ])
