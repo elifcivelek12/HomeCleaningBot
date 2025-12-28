@@ -13,13 +13,15 @@ class BehaviorManager(Node):
         # Navigasyon API'sini başlat
         self.navigator = BasicNavigator()
         
-        # Robotun başlangıç noktası (Charging Station / Dock)
-        # Dock eklenince değiştirilicektir.
+    
+        # Dock (Şarj İstasyonu) Hedef Noktası
         self.dock_pose = PoseStamped()
         self.dock_pose.header.frame_id = 'map'
-        self.dock_pose.pose.position.x = 0.0
+        self.dock_pose.pose.position.x = 1.0   # Robotun duracağı yer
         self.dock_pose.pose.position.y = -2.0
+        # Robotun yüzü duvara (istasyona) dönük dursun
         self.dock_pose.pose.orientation.w = 1.0
+  
 
         # Komutları dinlemek için bir topic (RViz'den veya terminalden tetiklemek için)
         self.command_sub = self.create_subscription(

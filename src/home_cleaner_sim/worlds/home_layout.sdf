@@ -147,7 +147,7 @@
 
         <!-- ŞARJ İSTASYONU (DOCKING STATION) -->
         <visual name="dock_station_vis">
-          <pose>1.8 -2 0 0 0 0</pose> <!-- Duvara yanaştırma -->
+          <pose>1.8 -2 0.15 0 0 0</pose> <!-- Duvara yanaştırma -->
           <geometry>
             <box><size>0.2 0.5 0.3</size></box> <!-- Küçük bir kutu -->
           </geometry>
@@ -157,7 +157,7 @@
           </material>
         </visual>
         <collision name="dock_station_col">
-          <pose>1.8 -2 0 0 0 0</pose>
+          <pose>1.8 -2 0.15 0 0 0</pose>
           <geometry>
             <box><size>0.2 0.5 0.3</size></box>
           </geometry>
