@@ -77,6 +77,14 @@ def generate_launch_description():
         ]
     )
     
+    # Behavior Manager Node
+    behavior_manager = Node(
+        package='home_cleaning_robot',
+        executable='behavior_manager',
+        name='behavior_manager',
+        output='screen',
+        parameters=[{'use_sim_time': use_sim_time}]
+    )
     # Create launch description
     ld = LaunchDescription()
     
@@ -88,5 +96,7 @@ def generate_launch_description():
     ld.add_action(nav2_launch)
     ld.add_action(rviz_launch)
     ld.add_action(initial_pose_setter)
+
+    ld.add_action(behavior_manager)
     
     return ld
