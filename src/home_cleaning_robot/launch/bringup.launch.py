@@ -76,6 +76,13 @@ def generate_launch_description():
             )
         ]
     )
+
+    control_panel = Node(
+        package='home_cleaning_robot',
+        executable='control_panel',
+        name='cleaning_control_panel',
+        output='screen'
+    )
     
     # Behavior Manager Node
     behavior_manager = Node(
@@ -98,5 +105,7 @@ def generate_launch_description():
     ld.add_action(initial_pose_setter)
 
     ld.add_action(behavior_manager)
+
+    ld.add_action(control_panel)
     
     return ld

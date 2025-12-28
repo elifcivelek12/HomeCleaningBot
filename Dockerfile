@@ -11,6 +11,7 @@ RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/p
 # 3. Paketleri Yükle (Artık 'ros-humble-ros-gzharmonic' kuruyoruz)
 RUN apt-get update && apt-get install -y \
     nano \
+    python3-tk \
     python3-pip \
     gz-harmonic \
     ros-humble-ros-gzharmonic \
