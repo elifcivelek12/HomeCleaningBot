@@ -23,6 +23,7 @@ class InitialPoseSetter(Node):
         time.sleep(1.0)
         
         self.get_logger().info('Setting initial pose...')
+        # Eski: self.set_initial_pose(x=0.0, y=-2.0, yaw=0.0)
         self.set_initial_pose(x=0.325, y=0.25, yaw=0.0)
         
     def set_initial_pose(self, x, y, yaw):

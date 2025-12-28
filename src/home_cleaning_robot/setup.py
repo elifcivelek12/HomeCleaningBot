@@ -45,6 +45,8 @@ data_files=[
         'console_scripts': [
             'state_publisher = home_cleaning_robot.state_publisher:main',
             'set_initial_pose = home_cleaning_robot.initial_pose_setter:main',
+            'behavior_manager = home_cleaning_robot.behavior_manager:main',
+            'control_panel = home_cleaning_robot.cleaning_control_panel:main', 
         ],
     },
 )
