@@ -18,7 +18,7 @@ class BehaviorManager(Node):
         self.dock_pose = PoseStamped()
         self.dock_pose.header.frame_id = 'map'
         self.dock_pose.pose.position.x = 1.0   # Robotun duracağı yer
-        self.dock_pose.pose.position.y = -2.0
+        self.dock_pose.pose.position.y = 0.0 # Fixed goal Y coordinate.
         # Robotun yüzü duvara (istasyona) dönük dursun
         self.dock_pose.pose.orientation.w = 1.0
   

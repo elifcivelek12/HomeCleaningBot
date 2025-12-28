@@ -48,7 +48,7 @@ def generate_launch_description():
             '-topic', 'robot_description',
             '-x', '1.0',  # İstasyonun 30cm önü
             '-y', '-2.0', # İstasyonla aynı hiza
-            '-z', '0.1'
+            '-z', '0.2'
         ],
         output='screen'
     )
