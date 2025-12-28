@@ -53,15 +53,21 @@ def generate_launch_description():
         output='screen'
     )
 
-    #ROS-Gazebo Köprüsü (BRIDGE) - EKSİK OLAN KISIM BUYDU
+    #ROS-Gazebo Köprüsü
     bridge = Node(
         package='ros_gz_bridge',
         executable='parameter_bridge',
         parameters=[{'use_sim_time': True}],
         arguments=[
+            # Hareket: ROS -> Gazebo (Model ismine göre yönlendiriyoruz)
             '/cmd_vel@geometry_msgs/msg/Twist@gz.msgs.Twist',
-            '/scan@sensor_msgs/msg/LaserScan@gz.msgs.LaserScan',
-            '/odom@nav_msgs/msg/Odometry@gz.msgs.Odometry',
+            '/model/home_cleaner_bot/cmd_vel@geometry_msgs/msg/Twist@gz.msgs.Twist',
+            
+            # Lidar ve Odom: Gazebo -> ROS
+            '/scan@sensor_msgs/msg/LaserScan[gz.msgs.LaserScan',
+            '/odom@nav_msgs/msg/Odometry[gz.msgs.Odometry',
+            
+            # TF ve Saat
             '/tf@tf2_msgs/msg/TFMessage[gz.msgs.Pose_V',
             '/joint_states@sensor_msgs/msg/JointState[gz.msgs.Model',
             '/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock' 

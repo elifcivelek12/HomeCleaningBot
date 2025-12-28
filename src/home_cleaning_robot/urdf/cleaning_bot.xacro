@@ -298,7 +298,7 @@
             <visualize>true</visualize>
             <gz:frame_id>lidar_link</gz:frame_id>
 
-            <topic>/scan</topic>
+            <topic>scan</topic>
         </sensor>
     </gazebo>
 
