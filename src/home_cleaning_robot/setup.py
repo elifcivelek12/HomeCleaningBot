@@ -12,9 +12,10 @@ data_files=[
         ('share/' + package_name, ['package.xml']),
         # Launch klasöründeki dosyalar
         ('share/' + package_name + '/launch', [
-            'launch/robot_state.launch.py', 
-            'launch/gazebo.launch.py', 
-            'launch/slam.launch.py'  
+            'launch/gazebo.launch.py',
+            'launch/slam.launch.py',
+            'launch/nav2.launch.py',
+            'launch/bringup.launch.py'
         ]),
         # URDF ve RViz dosyaları
         ('share/' + package_name + '/urdf', [
@@ -23,7 +24,11 @@ data_files=[
         ]),
         # Config klasörü ve içindeki YAML dosyası 
         ('share/' + package_name + '/config', [
-            'config/mapper_params_online_async.yaml'
+            'config/mapper_params_online_async.yaml',
+            'config/my_home_map.yaml',
+            'config/my_home_map.pgm',
+            'config/nav2_params.yaml',
+            'config/nav2.rviz',
         ]),
     ],    install_requires=['setuptools'],
     zip_safe=True,
@@ -39,6 +44,7 @@ data_files=[
     entry_points={
         'console_scripts': [
             'state_publisher = home_cleaning_robot.state_publisher:main',
+            'set_initial_pose = home_cleaning_robot.initial_pose_setter:main',
         ],
     },
 )
