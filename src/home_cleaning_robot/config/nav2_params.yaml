@@ -256,7 +256,8 @@ global_costmap:
 map_server:
   ros__parameters:
     use_sim_time: True
-    yaml_filename: ""
+    # Note: yaml_filename can be overridden by launch arguments
+    yaml_filename: "my_home_map.yaml"
 
 map_saver:
   ros__parameters:
