@@ -76,7 +76,7 @@
 
 
     
-	<!-- ========================================== -->
+	      <!-- ========================================== -->
         <!-- 2. İÇ DÖŞEME (KAPILI DİKEY DUVAR) -->
         <!-- ========================================== -->
         
@@ -144,6 +144,24 @@
         <!-- ========================================== -->
 
         <!-- 1. SALON (Sol Taraf) -->
+
+        <!-- ŞARJ İSTASYONU (DOCKING STATION) -->
+        <visual name="dock_station_vis">
+          <pose>1.8 -2 0 0 0 0</pose> <!-- Duvara yanaştırma -->
+          <geometry>
+            <box><size>0.2 0.5 0.3</size></box> <!-- Küçük bir kutu -->
+          </geometry>
+          <material>
+            <ambient>0.1 0.1 0.1 1</ambient> <!-- Siyah/Antrasit -->
+            <diffuse>0.1 0.1 0.1 1</diffuse>
+          </material>
+        </visual>
+        <collision name="dock_station_col">
+          <pose>1.8 -2 0 0 0 0</pose>
+          <geometry>
+            <box><size>0.2 0.5 0.3</size></box>
+          </geometry>
+        </collision>
         
         <!-- Ana Büyük Koltuk (Üst Duvar Tarafı) -->
         <visual name="sofa_main_vis">
