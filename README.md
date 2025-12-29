@@ -3,8 +3,8 @@
 This project involves the development of an autonomous indoor cleaning robot simulation called **HomeCleanerBot**. It integrates SLAM for environment mapping, Nav2 for autonomous navigation, a coverage planner for systematic cleaning, and a custom RViz interface for robot control—all encapsulated within a standalone Docker environment.
 
 ## 👥 Authors
-- **Elif Ceyda Civelek** - [elifceydacivelek@istun.edu.tr]
-- **Mehmet Sefa Toksoy** - [mehmetsefatoksoy@istun.edu.tr]
+- **Elif Ceyda Civelek** - [elif.civelek@istun.edu.tr]
+- **Mehmet Sefa Toksoy** - [mehmet.toksoy@istun.edu.tr]
 
 ---
 
