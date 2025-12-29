@@ -4,8 +4,8 @@
   <name>home_cleaning_robot</name>
   <version>0.0.1</version>
   <description>Home Cleaner Bot Robot URDF Package</description>
-  <maintainer email="mehmetsefatoksoy@istun.edu.tr">Mehmet Sefa Toksoy</maintainer>
-  <maintainer email="elifceydacivelek@istun.edu.tr">Elif Ceyda Civelek</maintainer>
+  <maintainer email="mehmet.toksoy@istun.edu.tr">Mehmet Sefa Toksoy</maintainer>
+  <maintainer email="elif.civelek@istun.edu.tr">Elif Ceyda Civelek</maintainer>
   <license>Apache-2.0</license>
 
   <depend>rclpy</depend>
