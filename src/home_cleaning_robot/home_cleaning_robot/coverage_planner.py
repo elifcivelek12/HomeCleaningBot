@@ -55,12 +55,13 @@ class CoveragePlanner:
             return False
         
         # OccupancyGrid: 0 = free, 100 = occupied, -1 = unknown
+        # Use stricter threshold to avoid inflated areas
         cell_value = self.map_data[my, mx]
-        return cell_value >= 0 and cell_value < 50  # Consider cells < 50 as free
+        return cell_value >= 0 and cell_value < 10  # Only truly free cells
     
     def get_map_bounds(self):
         """Find the actual bounds of the free space in the map"""
-        free_cells = np.argwhere((self.map_data >= 0) & (self.map_data < 50))
+        free_cells = np.argwhere((self.map_data >= 0) & (self.map_data < 10))
         
         if len(free_cells) == 0:
             if self.logger:
@@ -70,12 +71,12 @@ class CoveragePlanner:
         min_y, min_x = free_cells.min(axis=0)
         max_y, max_x = free_cells.max(axis=0)
         
-        # Add small margin
-        margin = int(0.5 / self.map_resolution)  # 0.5 meter margin
-        min_x = max(0, min_x - margin)
-        max_x = min(self.map_width - 1, max_x + margin)
-        min_y = max(0, min_y - margin)
-        max_y = min(self.map_height - 1, max_y + margin)
+        # Add larger margin to stay away from walls
+        margin = int(0.9 / self.map_resolution)  # 0.9 meter margin (robot + inflation)
+        min_x = max(0, min_x + margin)
+        max_x = min(self.map_width - 1, max_x - margin)
+        min_y = max(0, min_y + margin)
+        max_y = min(self.map_height - 1, max_y - margin)
         
         return min_x, max_x, min_y, max_y
     
@@ -189,11 +190,11 @@ class CoveragePlanner:
             return []
         
         optimized = []
-        # Reduce obstacle margin to 0.15m (robot radius consideration)
-        obstacle_margin = int(0.15 / self.map_resolution)
+        # Increase obstacle margin to 0.60m (robot radius 0.30m + safety buffer 0.30m)
+        obstacle_margin = int(0.60 / self.map_resolution)
         
         if self.logger:
-            self.logger.info(f'Optimizing with obstacle margin: {obstacle_margin} cells ({0.15}m)')
+            self.logger.info(f'Optimizing with obstacle margin: {obstacle_margin} cells ({0.60}m)')
         
         for wp in waypoints:
             mx, my = self.world_to_map(wp.pose.position.x, wp.pose.position.y)
