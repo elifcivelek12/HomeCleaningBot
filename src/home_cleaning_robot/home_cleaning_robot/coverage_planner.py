@@ -105,12 +105,21 @@ class CoveragePlanner:
         
         min_x, max_x, min_y, max_y = bounds
         
+        # Add safety margin to ensure we stay within map bounds when converting back
+        # Reduce the bounds by a small amount to account for floating point precision
+        safety_cells = 2
+        min_x = min(min_x + safety_cells, self.map_width - 1)
+        max_x = max(max_x - safety_cells, 0)
+        min_y = min(min_y + safety_cells, self.map_height - 1)
+        max_y = max(max_y - safety_cells, 0)
+        
         # Convert to world coordinates
         x_start, y_start = self.map_to_world(min_x, min_y)
         x_end, y_end = self.map_to_world(max_x, max_y)
         
         if self.logger:
-            self.logger.info(f'Coverage area: X[{x_start:.2f}, {x_end:.2f}], Y[{y_start:.2f}, {y_end:.2f}]')
+            self.logger.info(f'Coverage area (map cells): X[{min_x}, {max_x}], Y[{min_y}, {max_y}]')
+            self.logger.info(f'Coverage area (world): X[{x_start:.2f}, {x_end:.2f}], Y[{y_start:.2f}, {y_end:.2f}]')
         
         waypoints = []
         
@@ -120,6 +129,11 @@ class CoveragePlanner:
         # Generate boustrophedon pattern
         for i in range(num_rows):
             y = y_start + i * self.coverage_distance
+            
+            # Clamp y to valid range
+            my = int((y - self.map_origin.position.y) / self.map_resolution)
+            if my < 0 or my >= self.map_height:
+                continue
             
             # Alternate direction for each row
             if i % 2 == 0:
@@ -131,9 +145,11 @@ class CoveragePlanner:
             
             for x in x_points:
                 # Check if this point is in free space
-                mx, my = self.world_to_map(x, y)
+                mx = int((x - self.map_origin.position.x) / self.map_resolution)
+                my = int((y - self.map_origin.position.y) / self.map_resolution)
                 
-                if self.is_free(mx, my):
+                # Ensure coordinates are within map bounds
+                if 0 <= mx < self.map_width and 0 <= my < self.map_height and self.is_free(mx, my):
                     pose = PoseStamped()
                     pose.header.frame_id = 'map'
                     if clock:
@@ -182,8 +198,14 @@ class CoveragePlanner:
         for wp in waypoints:
             mx, my = self.world_to_map(wp.pose.position.x, wp.pose.position.y)
             
-            # Check if the center point is free
+            # Check if the center point is within map bounds and free
             if not self.is_free(mx, my):
+                continue
+            
+            # Ensure waypoint with margin stays within map bounds
+            if (mx - obstacle_margin < 0 or mx + obstacle_margin >= self.map_width or
+                my - obstacle_margin < 0 or my + obstacle_margin >= self.map_height):
+                # Too close to map edge, skip this waypoint
                 continue
             
             # Check if there's enough clearance around this waypoint
@@ -213,8 +235,8 @@ class CoveragePlanner:
             optimized = []
             for wp in waypoints:
                 mx, my = self.world_to_map(wp.pose.position.x, wp.pose.position.y)
-                # Just check if the waypoint itself is free
-                if self.is_free(mx, my):
+                # Just check if the waypoint itself is within bounds and free
+                if 0 <= mx < self.map_width and 0 <= my < self.map_height and self.is_free(mx, my):
                     optimized.append(wp)
             if self.logger:
                 self.logger.info(f'Relaxed optimization: {len(waypoints)} -> {len(optimized)} waypoints')
