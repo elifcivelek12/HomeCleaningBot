@@ -27,28 +27,41 @@ This project involves the development of an autonomous indoor cleaning robot sim
   xhost +local:root
   ```
 
-### Installation & Build
-1. Clone the repository:
+### Installation 
+
+Clone the repository:
    ```bash
    git clone https://github.com/elifcivelek12/HomeCleaningBot.git
    cd HomeCleaningBot
    ```
-2. Build the Docker image:
+
+### Building and Running the Simulation
+
+1. Open your terminal in the project root folder.
+2. Grant execution permission to the script:
+   ```bash
+   chmod +x run-docker.sh
+   ```
+3. Run the script:
+   ```bash
+   ./run-docker.sh
+   ```
+   
+- **OR USE TERMINAL**
+  
+1. Build the Docker image:
    ```bash
    docker build -t homecleanerbot .
    ```
-
-### Running the Simulation
-Execute the project with a single command:
-```bash
-docker run --rm -it \
-    --net=host \
-    --privileged \
-    -e DISPLAY=$DISPLAY \
-    -v /tmp/.X11-unix:/tmp/.X11-unix \
-    homecleanerbot
-```
-
+2. Execute the project with a single command:
+   ```bash
+   docker run --rm -it \
+       --net=host \
+       --privileged \
+       -e DISPLAY=$DISPLAY \
+       -v /tmp/.X11-unix:/tmp/.X11-unix \
+       homecleanerbot
+   ```
 ---
 
 ## 🧩 Key Components
