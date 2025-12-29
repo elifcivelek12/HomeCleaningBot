@@ -36,7 +36,7 @@ def generate_launch_description():
     
     # Include Nav2 launch with delay to allow Gazebo and robot to initialize
     nav2_launch = TimerAction(
-        period=5.0,
+        period=2.0,
         actions=[
             IncludeLaunchDescription(
                 PythonLaunchDescriptionSource(
@@ -50,18 +50,13 @@ def generate_launch_description():
     )
     
     # Launch RViz2 with Nav2 configuration
-    rviz_launch = TimerAction(
-        period=6.0,
-        actions=[
-            Node(
-                package='rviz2',
-                executable='rviz2',
-                name='rviz2',
-                arguments=['-d', rviz_config_file],
-                parameters=[{'use_sim_time': use_sim_time}],
-                output='screen'
-            )
-        ]
+    rviz_launch = Node(
+        package='rviz2',
+        executable='rviz2',
+        name='rviz2',
+        arguments=['-d', rviz_config_file],
+        parameters=[{'use_sim_time': use_sim_time}],
+        output='screen'
     )
     
     # Set initial pose after Nav2 is up
