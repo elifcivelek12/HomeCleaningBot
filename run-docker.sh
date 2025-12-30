@@ -1,4 +1,4 @@
-docker built -t homecleanerbot .
+docker build -t homecleanerbot .
 docker run --rm -it \
     --net=host \
     --privileged \
