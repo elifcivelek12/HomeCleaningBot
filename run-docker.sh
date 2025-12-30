@@ -1,3 +1,4 @@
+xhost +local:docker
 docker build -t homecleanerbot .
 docker run --rm -it \
     --net=host \
